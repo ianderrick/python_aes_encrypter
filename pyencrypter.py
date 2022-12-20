@@ -41,7 +41,7 @@ class App:
             messagebox.showerror('Error', 'Please enter a passphrase')
             return
 
-        # Generate a key from the passphrase using PBKDF2
+# Generate a key from the passphrase using PBKDF2
         salt = os.urandom(16)
         kdf = PBKDF2HMAC(
             algorithm=hashes.SHA256(),
@@ -51,13 +51,13 @@ class App:
         )
         key = base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
 
-        # Encrypt the file using the generated key
+# Encrypt the file using the generated key
         fernet = Fernet(key)
         with open(self.file_path, 'rb') as f:
             data = f.read()
         encrypted_data = fernet.encrypt(data)
 
-        # Save the encrypted file
+# Save the encrypted file
         encrypted_file_path = self.file_path + '.encrypted'
         with open(encrypted_file_path, 'wb') as f:
             f.write(encrypted_data)
