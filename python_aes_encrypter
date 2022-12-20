@@ -1,0 +1,35 @@
+import os
+import base64
+from Cryptodome.Cipher import AES
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QLabel, QPushButton
+
+class EncryptionApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.label = QLabel('Select a file to encrypt:', self)
+        self.button = QPushButton('Select File', self)
+        self.button.clicked.connect(self.showFileDialog)
+
+        self.setGeometry(300, 300, 300, 150)
+        self.setWindowTitle('Encryption App')
+        self.show()
+
+    def showFileDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ReadOnly
+        file_name, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","All Files (*);;Text Files (*.txt)", options=options)
+        if file_name:
+            self.encrypt_file(file_name)
+
+    def encrypt_file(self, file_name):
+        with open(file_name, 'rb') as file:
+            plaintext = file.read()
+        key = os.urandom(32)  # generate a random secret key
+        cipher = AES.new(key, AES.MODE_EAX)
+        ciphertext, tag = cipher.encrypt_and_digest(plaintext)
+        [ file_name + ext for ext in ('.bin', '.tag', '.key') ]
+        with open(file_name + '.bin', 'wb') as file:
+            [ file.write(x) for x in
